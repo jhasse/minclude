@@ -109,9 +109,11 @@ def main(build_command):
 
     for filename in source_files:
         with open(filename, "rb") as file:
-            lines = [line for line in file.readlines() if line != PLACEHOLDER_COMMENT]
-        with open(filename, "wb") as file:
-            file.writelines(lines)
+            old_lines = file.readlines()
+            lines = [line for line in old_lines if line != PLACEHOLDER_COMMENT]
+        if len(lines) < len(old_lines):
+            with open(filename, "wb") as file:
+                file.writelines(lines)
 
     click.secho("Removed {} of {} includes ({} skipped).".format(
         click.style(str(n_removed), fg='green', bold=True),
