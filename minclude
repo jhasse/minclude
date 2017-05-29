@@ -7,6 +7,7 @@ import random
 import string
 import re
 import click
+import signal
 from progressbar import ProgressBar
 
 FILE_EXTENSIONS = ["cpp", "c", "h", "hpp", "cc", "hh", "cxx", "hxx"]
@@ -77,8 +78,16 @@ def main(build_command, exclude_files):
     progress_bar = ProgressBar(redirect_stdout=True)
     n_removed = 0
     n_skipped = 0
+    should_quit = False
+
+    def handle_sigint(_signal, _frame):
+        nonlocal should_quit
+        should_quit = True
+    signal.signal(signal.SIGINT, handle_sigint) # Remove placeholders on Ctrl+C
 
     for include_directive in progress_bar(include_directives):
+        if should_quit:
+            break
         linenumber = include_directive[1]
         lines = []
         with open(include_directive[0], "rb") as file:
