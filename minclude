@@ -32,7 +32,9 @@ def print_status(status, color, include_directive):
 @click.command()
 @click.version_option(version="1.0.0")
 @click.option('--build_command', help='The build command to check if an include is needed.')
-def main(build_command):
+@click.option('--exclude_files',
+              help='Exclude any source file which name contains this regular expression.')
+def main(build_command, exclude_files):
     if not build_command:
         build_command = click.prompt("Enter build command")
     print("Testing build command ... ", end="", flush=True)
@@ -43,12 +45,17 @@ def main(build_command):
     click.secho("OK", fg='green')
     source_files = []
 
+    exclude_count = 0
     print("Scanning for C/C++ source files ... ", end="", flush=True)
     for extension in FILE_EXTENSIONS:
-        for root, dirnames, filenames in os.walk('.'):
+        for root, _, filenames in os.walk('.'):
             for filename in fnmatch.filter(filenames, '*.' + extension):
-                source_files.append(os.path.join(root, filename))
-    click.secho("OK", fg='green')
+                path = os.path.join(os.path.relpath(root, '.'), filename)
+                if exclude_files and re.search(exclude_files, path):
+                    exclude_count += 1
+                else:
+                    source_files.append(path)
+    click.secho("OK ({} excluded)".format(exclude_count), fg='green')
 
     include_directives = []
 
