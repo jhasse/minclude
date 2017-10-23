@@ -9,4 +9,8 @@ setup(
     download_url='https://github.com/jhasse/minclude/archive/v1.0.0.tar.gz',
     description="Remove unnecessary include directives in C/C++ projects",
     scripts=['minclude'],
+    install_requires=[
+        'click',
+        'progressbar2',
+    ],
 )
