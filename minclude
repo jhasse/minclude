@@ -103,8 +103,10 @@ def main(build_command, exclude_files):
             print_status("Error", "red", include_directive)
             n_skipped += 1
             continue
-        if run_build(build_command):
-            # Include directive doesn't influence the build, undo change and skip it
+        if run_build(build_command) or should_quit:
+            # Include directive doesn't influence the build, undo change and skip it. If should_quit
+            # is set, the user pressed Ctrl+C and the build was canceled. run_build will return
+            # False, although it might have succeeded. Also undo the change in that case.
             lines[linenumber] = line_backup
             with open(include_directive[0], "wb") as file:
                 file.writelines(lines)
