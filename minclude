@@ -35,7 +35,10 @@ def print_status(status, color, include_directive):
 @click.option('--build_command', help='The build command to check if an include is needed.')
 @click.option('--exclude_files',
               help='Exclude any source file which name contains this regular expression.')
-def main(build_command, exclude_files):
+@click.option('--exclude_includes',
+              help='Exclude any include directive which contains this regular expression.',
+              default=r'// IWYU pragma: keep', show_default=True)
+def main(build_command, exclude_files, exclude_includes):
     if not build_command:
         build_command = click.prompt("Enter build command")
     print("Testing build command ... ", end="", flush=True)
@@ -70,7 +73,8 @@ def main(build_command, exclude_files):
                     ), fg='red')
                 match = re.search(INCLUDE_REGEXP, line)
                 if match:
-                    include_directives.append((filename, linenumber,))
+                    if not re.search(exclude_includes, line):
+                        include_directives.append((filename, linenumber,))
     click.secho("OK", fg='green')
 
     random.shuffle(include_directives)
@@ -140,4 +144,4 @@ def main(build_command, exclude_files):
     ))
 
 if __name__ == '__main__':
-    main()
+    main(max_content_width=100)

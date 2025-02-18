@@ -22,12 +22,14 @@ Yes it is! Depending on the size of your code base, this might take several hour
 
 ### How can I tell Minclude to ignore some include directives?
 
-Simply wrap them:
+By default all includes with the following comment are excluded:
 
 ```c
-#ifndef MINCLUDE
-#include <string>
-#endif
+#include <string> // IWYU pragma: keep
 ```
 
-And then add `-DMINCLUDE` as a compiler argument when running Minclude.
+If you want to exclude all system includes instead:
+
+```sh
+minclude --exclude_includes "#\s*include\s*<[^>]*>"
+```
