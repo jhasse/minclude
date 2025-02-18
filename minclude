@@ -11,7 +11,7 @@ import signal
 from progressbar import ProgressBar
 
 FILE_EXTENSIONS = ["cpp", "c", "h", "hpp", "cc", "hh", "cxx", "hxx"]
-INCLUDE_REGEXP = r'(#include\s*[<"])([^>]*)([>"])'
+INCLUDE_REGEXP = r'(#\s*include\s*[<"])([^>]*)([>"])'
 RANDOM_STRING = ''.join(random.choice(string.ascii_uppercase) for _ in range(78))
 PLACEHOLDER_COMMENT = str.encode("//{}\n".format(RANDOM_STRING))
 
