@@ -31,7 +31,7 @@ def print_status(status, color, include_directive):
     ))
 
 @click.command()
-@click.version_option(version="1.0.0")
+@click.version_option(version="1.2.0")
 @click.option('--build_command', help='The build command to check if an include is needed.')
 @click.option('--exclude_files',
               help='Exclude any source file which name contains this regular expression.')
